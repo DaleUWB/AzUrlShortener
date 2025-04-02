@@ -96,13 +96,14 @@ namespace Cloud5mins.ShortenerTools.Functions
                 string longUrl = input.Url.Trim();
                 string vanity = string.IsNullOrWhiteSpace(input.Vanity) ? "" : input.Vanity.Trim();
                 string title = string.IsNullOrWhiteSpace(input.Title) ? "" : input.Title.Trim();
+                string createdby = string.IsNullOrWhiteSpace(input.CreatedBy) ? "" : input.Title.Trim(); //added by Dale Yuping 4/25
 
 
                 ShortUrlEntity newRow;
 
                 if (!string.IsNullOrEmpty(vanity))
-                {
-                    newRow = new ShortUrlEntity(longUrl, vanity, title, input.Schedules);
+                { // added by Dale Yuping 4/25
+                    newRow = new ShortUrlEntity(longUrl, vanity, title, createdby, input.Schedules);
                     if (await stgHelper.IfShortUrlEntityExist(newRow))
                     {
                         var badResponse = req.CreateResponse(HttpStatusCode.Conflict);
@@ -111,14 +112,14 @@ namespace Cloud5mins.ShortenerTools.Functions
                     }
                 }
                 else
-                {
-                    newRow = new ShortUrlEntity(longUrl, await Utility.GetValidEndUrl(vanity, stgHelper), title, input.Schedules);
+                {// added by Dale Yuping 4/25
+                    newRow = new ShortUrlEntity(longUrl, await Utility.GetValidEndUrl(vanity, stgHelper), title, createdby, input.Schedules);
                 }
 
                 await stgHelper.SaveShortUrlEntity(newRow);
 
                 var host = string.IsNullOrEmpty(_settings.CustomDomain) ? req.Url.Host : _settings.CustomDomain.ToString();
-                result = new ShortResponse(host, newRow.Url, newRow.RowKey, newRow.Title);
+                result = new ShortResponse(host, newRow.Url, newRow.RowKey, newRow.Title, newRow.CreatedBy); //added by Dale Yuping 4/25
 
                 _logger.LogInformation("Short Url created.");
             }

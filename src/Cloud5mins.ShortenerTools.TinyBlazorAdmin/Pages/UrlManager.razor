@@ -9,6 +9,7 @@
 @inject HttpClient Http
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
+@inject AuthenticationStatProvider AuthenticationStateProvider <!-- Dale Yuping 4/25 -->
 
 @attribute [Authorize(Roles = "admin")]
 
@@ -61,6 +62,7 @@ else
         </GridColumn>
         <GridColumn Field=@nameof(ShortUrlEntity.Title) HeaderText="Title"></GridColumn>
         <GridColumn Field=@nameof(ShortUrlEntity.Url) HeaderText="Url"></GridColumn>
+        <GridColumn Field=@nameof(ShortUrlEntity.CreatedBy) HeaderText="CreatedBy"></GridColumn><!--- Dale Yuping 4/25 -->
         <GridColumn Width="100" TextAlign="TextAlign.Right" Field=@nameof(ShortUrlEntity.Clicks) HeaderText="Clicks">
             <Template>
                 @{
@@ -253,11 +255,33 @@ else
     }
 
     [Authorize(Roles = "admin")]
-    void CreateShortUrl()
+//void CreateShortUrl()
+public async Task CreateShortUrl()
+{
+    // shortUrlRequest = new ShortUrlRequest();
+    // ShowCreatePopup = true;
+
+    //replaced 4/1/2025
+    try
     {
-        shortUrlRequest = new ShortUrlRequest();
+        // Get the authentication state
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var createdby = authState.CreatedBy;
+
+        var userId = createdby.Identity.Name; // This will give you the username or ID of the authenticated user
+
+        // Call your API to create the short URL
+        var shortUrlRequest = new ShortUrlRequest();
+
+        shortUrlRequest.CreatedBy = userId;
         ShowCreatePopup = true;
     }
+    catch (Exception ex)
+    {
+
+    }
+    //end of the Yuping's code
+}
 
     [Inject] public IJSRuntime JsRuntime { get; set; }
     public async Task CopyToClipboardAsync(string url)
