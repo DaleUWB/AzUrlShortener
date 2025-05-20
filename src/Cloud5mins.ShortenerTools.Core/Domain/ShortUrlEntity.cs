@@ -26,8 +26,6 @@ namespace Cloud5mins.ShortenerTools.Core.Domain
 
         public string ShortUrl { get; set; }
 
-        public string CreatedBy { get; set; } // added by Dale and Yuping 2025/4/2
-
         public int Clicks { get; set; }
 
         public bool? IsArchived { get; set; }
@@ -71,18 +69,17 @@ namespace Cloud5mins.ShortenerTools.Core.Domain
             Initialize(longUrl, endUrl, string.Empty, schedules);
         }
 
-        public ShortUrlEntity(string longUrl, string endUrl, string title, string createdby, Schedule[] schedules)
+        public ShortUrlEntity(string longUrl, string endUrl, string title, Schedule[] schedules)
         {
-            Initialize(longUrl, endUrl, title, createdby, schedules);
+            Initialize(longUrl, endUrl, title, schedules);
         }
 
-        private void Initialize(string longUrl, string endUrl, string title, string createdby, Schedule[] schedules)
+        private void Initialize(string longUrl, string endUrl, string title, Schedule[] schedules)
         {
             PartitionKey = endUrl.First().ToString();
             RowKey = endUrl;
             Url = longUrl;
             Title = title;
-            CreatedBy = createdby;
             Clicks = 0;
             IsArchived = false;
 

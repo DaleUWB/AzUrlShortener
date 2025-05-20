@@ -8,7 +8,7 @@ namespace Cloud5mins.ShortenerTools.Core.Messages
         private string _vanity;
 
         public string Title { get; set; }
-        public string CreatedBy { get; set; } // added by Dale and Yuping 4/25
+
         public string Vanity
         {
             get
